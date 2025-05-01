@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { FiArrowLeft, FiLock } from 'react-icons/fi';
+import { FiLock } from 'react-icons/fi';
 const CultureExplorer = () => {
   const { isDarkMode } = useTheme();
   const { countryCode } = useParams();

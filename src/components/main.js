@@ -196,7 +196,7 @@ const Main = () => {
               bgColor: isDarkMode ? 'bg-blue-500/20' : 'bg-blue-500/10',
               textColor: isDarkMode ? 'text-blue-400' : 'text-blue-600',
               hoverColor: isDarkMode ? 'from-blue-500/30 to-blue-600/20' : 'from-blue-400/20 to-blue-500/20',
-              link: "/map" 
+              link: "/login" 
             },
             {
               icon: (

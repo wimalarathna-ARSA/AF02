@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext'; // import ThemeProvider
+import { ThemeProvider } from './context/ThemeContext'; 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -10,7 +10,6 @@ import CountryComparison from './pages/CountryComparison';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Main from './components/main';
-import MapPage from './pages/MapPage';
 import CultureExplorer from './pages/CultureExplorer';
 import CultureHub from './pages/CultureHub';
 import ForgotPassword from './components/ForgotPassword';
@@ -56,19 +55,9 @@ const AppContent = () => {
           }
         />
         
-        <Route
-          path="/map/:lat/:lng/:countryName"
-          element={
-            <ProtectedRoute>
-              <MapPage />
-            </ProtectedRoute>
-          }
-        />
-        
         <Route path="/main" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />  
-        <Route path="/map" element={<MapPage/>} />
         <Route path="/culture" element={<CultureHub />} />
         <Route path="/culture/:countryCode" element={<CultureExplorer />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

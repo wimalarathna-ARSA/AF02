@@ -12,7 +12,7 @@ const Home = () => {
   const [languageFilter, setLanguageFilter] = useState('');
   const [showFavorites, setShowFavorites] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
-  const { isAuthenticated, favorites, toggleFavorite, isFavorite } = useAuth();
+  const { isAuthenticated, toggleFavorite, isFavorite } = useAuth();
   const { isDarkMode } = useTheme();
 
   useEffect(() => {

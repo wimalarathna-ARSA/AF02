@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { FiSearch, FiX, FiGlobe, FiLoader, FiInfo, FiMapPin, FiUsers } from 'react-icons/fi';
+import { FiSearch, FiX, FiGlobe, FiInfo } from 'react-icons/fi';
 
 const CultureHub = () => {
   const { isDarkMode } = useTheme();

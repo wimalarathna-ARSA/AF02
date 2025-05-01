@@ -69,16 +69,6 @@ const Navbar = () => {
                     </span>
                     <span className={`absolute inset-0 test-black bg-gradient-to-r from-emerald-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg`}></span>
                   </Link>
-                  
-                  <Link
-                    to="/map"
-                    className={`relative px-5 py-2.5 font-medium rounded-lg group transition-all duration-300 overflow-hidden ${isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}`}
-                  >
-                    <span className="relative z-10 flex items-center text-teal-400 group-hover:text-gray-600">
-                      Map View
-                    </span>
-                    <span className={`absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg`}></span>
-                  </Link>
                 </div>
                 
                 <div className="flex items-center space-x-4">

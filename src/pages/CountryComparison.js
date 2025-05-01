@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiChevronUp, FiCheck, FiFlag, FiMapPin, FiUsers, FiLayers, FiGlobe, FiDollarSign, FiClock, FiCalendar, FiActivity, FiArrowLeft } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiCheck, FiFlag, FiUsers, FiGlobe, FiDollarSign, FiActivity, FiArrowLeft } from 'react-icons/fi';
 
 const CountryComparison = () => {
   const [countries, setCountries] = useState([]);

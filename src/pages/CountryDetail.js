@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowLeft, FiHeart, FiMapPin, FiExternalLink, FiGlobe, FiDollarSign, FiClock, FiCalendar, FiUsers, FiLayers, FiFlag, FiInfo, FiTruck } from 'react-icons/fi';
+import { FiArrowLeft, FiHeart, FiMapPin, FiGlobe, FiDollarSign,FiUsers, FiFlag, FiTruck } from 'react-icons/fi';
 
 const CountryDetail = () => {
   const { countryCode } = useParams();
