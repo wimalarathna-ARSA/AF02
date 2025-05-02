@@ -8,7 +8,6 @@ jest.mock('./components/Navbar', () => () => <div data-testid="navbar">Navbar</d
 jest.mock('./pages/Home', () => () => <div data-testid="home">Home</div>);
 jest.mock('./pages/CountryDetail', () => () => <div data-testid="country-detail">CountryDetail</div>);
 jest.mock('./pages/CountryComparison', () => () => <div data-testid="comparison">CountryComparison</div>);
-jest.mock('./pages/MapPage', () => () => <div data-testid="map">MapPage</div>);
 jest.mock('./components/Login', () => () => <div data-testid="login">Login</div>);
 jest.mock('./components/SignUp', () => () => <div data-testid="signup">SignUp</div>);
 jest.mock('./components/main', () => () => <div data-testid="main">Main</div>);

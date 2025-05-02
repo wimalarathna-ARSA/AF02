@@ -6,6 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [favorites, setFavorites] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadUserData = (email) => {
     try {
@@ -23,20 +24,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setIsAuthenticated(true);
-        loadUserData(parsedUser.email);
+    const initializeAuth = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+          loadUserData(parsedUser.email);
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setUser(null);
+        setIsAuthenticated(false);
+        setFavorites(new Set());
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      setUser(null);
-      setIsAuthenticated(false);
-      setFavorites(new Set());
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = (userData) => {
@@ -78,6 +85,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       isAuthenticated,
+      isLoading,
       login,
       logout,
       toggleFavorite,
