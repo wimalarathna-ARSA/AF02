@@ -89,35 +89,45 @@ describe('Home', () => {
     expect(screen.getByText('United States')).toBeInTheDocument();
     expect(screen.queryByText('Canada')).not.toBeInTheDocument();
   });
-
   it('filters countries by region', async () => {
-    renderWithProviders(<Home />);
+  renderWithProviders(<Home />);
 
-    await waitFor(() => {
-      expect(screen.queryByText(/Loading countries.../i)).not.toBeInTheDocument();
-    });
+  await waitFor(() => {
+    expect(screen.queryByText(/Loading countries.../i)).not.toBeInTheDocument();
+  });
 
-    const regionSelect = screen.getByLabelText(/Region/i);
-    fireEvent.change(regionSelect, { target: { value: 'Americas' } });
+  // Clear any existing search term first
+  const searchInput = screen.getByPlaceholderText(/Search for a country.../i);
+  fireEvent.change(searchInput, { target: { value: '' } });
 
+  const regionSelect = screen.getByLabelText(/Region/i);
+  fireEvent.change(regionSelect, { target: { value: 'Americas' } });
+
+  await waitFor(() => {
     expect(screen.getByText('United States')).toBeInTheDocument();
     expect(screen.getByText('Canada')).toBeInTheDocument();
   });
+});
 
-  it('filters countries by language', async () => {
-    renderWithProviders(<Home />);
+it('filters countries by language', async () => {
+  renderWithProviders(<Home />);
 
-    await waitFor(() => {
-      expect(screen.queryByText(/Loading countries.../i)).not.toBeInTheDocument();
-    });
+  await waitFor(() => {
+    expect(screen.queryByText(/Loading countries.../i)).not.toBeInTheDocument();
+  });
 
-    const languageSelect = screen.getByLabelText(/Language/i);
-    fireEvent.change(languageSelect, { target: { value: 'English' } });
+  // Clear any existing search term first
+  const searchInput = screen.getByPlaceholderText(/Search for a country.../i);
+  fireEvent.change(searchInput, { target: { value: '' } });
 
+  const languageSelect = screen.getByLabelText(/Language/i);
+  fireEvent.change(languageSelect, { target: { value: 'English' } });
+
+  await waitFor(() => {
     expect(screen.getByText('United States')).toBeInTheDocument();
     expect(screen.getByText('Canada')).toBeInTheDocument();
   });
-
+});
   it('handles favorite button click', async () => {
     const toggleFavorite = jest.fn();
     useAuth.mockImplementation(() => ({

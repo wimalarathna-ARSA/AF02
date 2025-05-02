@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
 const Home = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [regionFilter, setRegionFilter] = useState('');
-  const [languageFilter, setLanguageFilter] = useState('');
-  const [showFavorites, setShowFavorites] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const [regionFilter, setRegionFilter] = useState(searchParams.get('region') || '');
+  const [languageFilter, setLanguageFilter] = useState(searchParams.get('language') || '');
+  const [showFavorites, setShowFavorites] = useState(searchParams.get('favorites') === 'true');
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const { isAuthenticated, toggleFavorite, isFavorite } = useAuth();
   const { isDarkMode } = useTheme();
 
+  // Sync filters to URL query parameters
+  useEffect(() => {
+    const params = {};
+    if (searchTerm) params.search = searchTerm;
+    if (regionFilter) params.region = regionFilter;
+    if (languageFilter) params.language = languageFilter;
+    if (showFavorites) params.favorites = 'true';
+    setSearchParams(params, { replace: true });
+  }, [searchTerm, regionFilter, languageFilter, showFavorites, setSearchParams]);
+
+  // Fetch countries and extract languages
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -40,6 +52,7 @@ const Home = () => {
     fetchCountries();
   }, []);
 
+  // Filter countries based on state
   const filteredCountries = countries.filter(country => {
     const matchesSearch = country.name.common.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRegion = !regionFilter || country.region === regionFilter;
@@ -114,6 +127,7 @@ const Home = () => {
               <label htmlFor="region-select" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-green-700'} mb-2`}>Region</label>
               <select
                 id="region-select"
+                data-testid="region-select"
                 value={regionFilter}
                 onChange={(e) => setRegionFilter(e.target.value)}
                 className={`w-full pl-4 pr-10 py-3 rounded-lg border appearance-none transition-all duration-200 ${
@@ -134,6 +148,7 @@ const Home = () => {
               <label htmlFor="language-select" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-green-700'} mb-2`}>Language</label>
               <select
                 id="language-select"
+                data-testid="language-select" 
                 value={languageFilter}
                 onChange={(e) => setLanguageFilter(e.target.value)}
                 className={`w-full pl-4 pr-10 py-3 rounded-lg border appearance-none transition-all duration-200 ${
@@ -169,7 +184,7 @@ const Home = () => {
             <div className="mt-4 flex items-center justify-between">
               <div className="flex flex-wrap gap-2">
                 {searchTerm && (
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-grr-500/10 text-blue-600 border-blue-200'} border`}>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${isDarkMode ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-200'} border`}>
                     Search: {searchTerm}
                     <button
                       onClick={() => setSearchTerm('')}
@@ -225,80 +240,78 @@ const Home = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCountries.map((country) => (
-           <Link
-           key={country.cca3}
-           to={`/country/${country.cca3}`}
-           className={`${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/50 border-blue-400'} relative rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-blue-500/20 hover:scale-[1.02] backdrop-blur-sm group`}
-         >
-           <div className="flex items-center p-4 gap-4">
-             <div className="w-1/3 h-24 relative group">
-               <img
-                 src={country.flags.png}
-                 alt={`Flag of ${country.name.common}`}
-                 className="w-full h-full object-cover rounded-lg cursor-pointer"
-               />
-               <div className="absolute inset-0 z-50 flex justify-center items-center group-hover:flex hidden">
-                 <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full mt-2 w-64 ${isDarkMode ? 'bg-gray-900 border-white/10' : 'bg-white border-gray-200'} p-2 rounded-lg border shadow-2xl transition-all duration-300 scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100`}>
-                   <img
-                     src={country.flags.svg || country.flags.png}
-                     alt={`Popup Flag of ${country.name.common}`}
-                     className="w-full h-auto object-contain rounded"
-                   />
-                 </div>
-               </div>
-             </div>
-             <div className="flex-1">
-               <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'} mb-1`}>
-                 {country.name.common}
-               </h2>
-               <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                 <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Population:</span>{' '}
-                 <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>
-                   {country.population.toLocaleString()}
-                 </span>
-               </p>
-               <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                 <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Region:</span>{' '}
-                 <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>{country.region}</span>
-               </p>
-               <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                 <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Capital:</span>{' '}
-                 <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>
-                   {country.capital?.[0] || 'N/A'}
-                 </span>
-               </p>
-             </div>
-             <button
-               onClick={(e) => {
-                 e.preventDefault();
-                 toggleFavorite(country.cca3);
-               }}
-               title={isFavorite(country.cca3) ? 'Remove from favorites' : 'Add to favorites'}
-               className={`self-start p-1.5 ${isDarkMode ? 'bg-gray-900/90 hover:bg-gray-800' : 'bg-gray-100 hover:bg-gray-200'} rounded-full shadow-lg transition-colors duration-200`}
-             >
-               <svg
-                 className={`w-4 h-4 ${
-                   isFavorite(country.cca3) ? 'text-emerald-400 fill-current' : isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                 }`}
-                 fill={isFavorite(country.cca3) ? 'currentColor' : 'none'}
-                 stroke="currentColor"
-                 viewBox="0 0 24 24"
-               >
-                 <path
-                   strokeLinecap="round"
-                   strokeLinejoin="round"
-                   strokeWidth={2}
-                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                 />
-               </svg>
-             </button>
-           </div>
-         
-           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-800/60 backdrop-blur-md text-white text-sm font-semibold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-xl">
-             Explore details
-           </div>
-         </Link>
-         
+            <Link
+              key={country.cca3}
+              to={`/country/${country.cca3}`}
+              className={`${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/50 border-blue-400'} relative rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-blue-500/20 hover:scale-[1.02] backdrop-blur-sm group`}
+            >
+              <div className="flex items-center p-4 gap-4">
+                <div className="w-1/3 h-24 relative group">
+                  <img
+                    src={country.flags.png}
+                    alt={`Flag of ${country.name.common}`}
+                    className="w-full h-full object-cover rounded-lg cursor-pointer"
+                  />
+                  <div className="absolute inset-0 z-50 flex justify-center items-center group-hover:flex hidden">
+                    <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full mt-2 w-64 ${isDarkMode ? 'bg-gray-900 border-white/10' : 'bg-white border-gray-200'} p-2 rounded-lg border shadow-2xl transition-all duration-300 scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100`}>
+                      <img
+                        src={country.flags.svg || country.flags.png}
+                        alt={`Popup Flag of ${country.name.common}`}
+                        className="w-full h-auto object-contain rounded"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'} mb-1`}>
+                    {country.name.common}
+                  </h2>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Population:</span>{' '}
+                    <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>
+                      {country.population.toLocaleString()}
+                    </span>
+                  </p>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Region:</span>{' '}
+                    <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>{country.region}</span>
+                  </p>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <span className={isDarkMode ? 'text-blue-400/70' : 'text-blue-600/70'}>Capital:</span>{' '}
+                    <span className={isDarkMode ? 'text-gray-300' : 'text-gray-900'}>
+                      {country.capital?.[0] || 'N/A'}
+                    </span>
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleFavorite(country.cca3);
+                  }}
+                  title={isFavorite(country.cca3) ? 'Remove from favorites' : 'Add to favorites'}
+                  className={`self-start p-1.5 ${isDarkMode ? 'bg-gray-900/90 hover:bg-gray-800' : 'bg-gray-100 hover:bg-gray-200'} rounded-full shadow-lg transition-colors duration-200`}
+                >
+                  <svg
+                    className={`w-4 h-4 ${
+                      isFavorite(country.cca3) ? 'text-emerald-400 fill-current' : isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                    fill={isFavorite(country.cca3) ? 'currentColor' : 'none'}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-800/60 backdrop-blur-md text-white text-sm font-semibold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-xl">
+                Explore details
+              </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -306,4 +319,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;
