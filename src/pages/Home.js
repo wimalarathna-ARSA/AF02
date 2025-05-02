@@ -237,6 +237,13 @@ const Home = () => {
             </div>
           )}
         </div>
+        
+        {showFavorites && filteredCountries.length === 0 && (
+        <div className={`text-center py-12 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className="text-lg font-medium">No favorite countries found.</p>
+          <p className="mt-2">Add some countries to your favorites to see them here!</p>
+        </div>
+      )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCountries.map((country) => (
